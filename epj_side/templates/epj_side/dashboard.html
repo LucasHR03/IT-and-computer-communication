@@ -1,0 +1,191 @@
+{% load static %}
+<!doctype html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EPJ Dashboard</title>
+
+  <!-- Ekstern CSS -->
+  <link rel="stylesheet" href="{% static 'css/dashboard.css' %}" />
+</head>
+<body>
+  <header>
+    <h1>Elektronisk Patientjournal System</h1>
+    <div id="user-info" aria-label="Brugerinformation">
+      Bruger: <span id="user-name">Dr. Hansen</span>
+      <span class="role-badge" id="user-role">Læge</span>
+    </div>
+    <button id="logout-btn" aria-label="Log ud">Log ud</button>
+  </header>
+
+  <nav aria-label="Primær navigation">
+    <button data-section="patientdata" class="nav-btn active">Patientidentitet &amp; Basisdata</button>
+    <button data-section="journalnotater" class="nav-btn">Journalnotater &amp; Dokumentation</button>
+    <button data-section="diagnoser" class="nav-btn">Diagnoseliste &amp; ICD-koder</button>
+    <button data-section="allergier" class="nav-btn">Allergier &amp; Intoleranser</button>
+    <button data-section="medicin" class="nav-btn">Medicin &amp; Ordinationer</button>
+    <button data-section="audit" class="nav-btn">Audit &amp; Logning</button>
+  </nav>
+
+  <main>
+    <!-- Patientdata -->
+    <section id="patientdata" class="section active">
+      <h2>📋 Patientidentitet &amp; Basisdata</h2>
+      <form id="patient-form">
+        <fieldset>
+          <legend>Registrer ny patient</legend>
+          <label for="cpr">CPR/ID *</label>
+          <input type="text" id="cpr" required maxlength="11" placeholder="123456-7890" />
+          <div id="cpr-error" class="error"></div>
+
+          <label for="navn">Fulde navn *</label>
+          <input type="text" id="navn" required placeholder="Fornavn Efternavn" />
+
+          <label for="kontakt">Kontaktoplysninger *</label>
+          <input type="text" id="kontakt" required placeholder="Telefon eller email" />
+
+          <label for="paarorende">Pårørende kontakt</label>
+          <input type="text" id="paarorende" placeholder="Navn og telefon" />
+
+          <label for="samtykke">Informeret samtykke *</label>
+          <select id="samtykke" required>
+            <option value="">Vælg samtykke status</option>
+            <option value="ja">Ja - Samtykke givet</option>
+            <option value="nej">Nej - Samtykke nægtet</option>
+          </select>
+
+          <button type="submit">Gem patient i system</button>
+        </fieldset>
+      </form>
+
+      <div class="list-header">
+        <h3>Registrerede patienter</h3>
+        <div>
+          <button class="export-btn" id="export-patients">Eksporter data</button>
+          <input type="file" id="import-patients-file" accept=".json" style="display:none" />
+          <button class="import-btn" id="import-patients">Importer data</button>
+        </div>
+      </div>
+      <ul id="patient-list"></ul>
+    </section>
+
+    <!-- Journalnotater -->
+    <section id="journalnotater" class="section">
+      <h2>📝 Journalnotater &amp; Dokumentation</h2>
+      <form id="journal-form">
+        <fieldset>
+          <legend>Opret nyt journalnotat</legend>
+          <label for="journal-patient-cpr">Patient CPR *</label>
+          <input type="text" id="journal-patient-cpr" required maxlength="11" placeholder="123456-7890" />
+          <label for="journal-type">Type af notat</label>
+          <select id="journal-type">
+            <option value="konsultation">Konsultation</option>
+            <option value="observation">Observation</option>
+            <option value="behandling">Behandling</option>
+            <option value="andet">Andet</option>
+          </select>
+          <label for="journal-text">Journalnotat *</label>
+          <textarea id="journal-text" rows="4" required placeholder="Beskriv patientkontakt, observationer, behandling..."></textarea>
+          <button type="submit">Gem journalnotat</button>
+        </fieldset>
+      </form>
+
+      <div class="list-header">
+        <h3>Journalnotater</h3>
+        <div>
+          <button class="export-btn" id="export-journal">Eksporter</button>
+          <input type="file" id="import-journal-file" accept=".json" style="display:none" />
+          <button class="import-btn" id="import-journal">Importer</button>
+        </div>
+      </div>
+      <ul id="journal-list"></ul>
+    </section>
+
+    <!-- Diagnoser -->
+    <section id="diagnoser" class="section">
+      <h2>🏥 Diagnoseliste &amp; ICD-koder</h2>
+      <form id="diagnose-form">
+        <fieldset>
+          <legend>Tilføj ny diagnose</legend>
+          <label for="diagnose-cpr">Patient CPR *</label>
+          <input type="text" id="diagnose-cpr" required maxlength="11" placeholder="123456-7890" />
+          <label for="diagnose-text">Diagnose *</label>
+          <input type="text" id="diagnose-text" required placeholder="F.eks. Diabetes Type 2 eller E11.9" />
+          <label for="diagnose-status">Diagnose status *</label>
+          <select id="diagnose-status" required>
+            <option value="aktiv">Aktiv</option>
+            <option value="historisk">Historisk</option>
+            <option value="mistænkt">Mistænkt</option>
+          </select>
+          <button type="submit">Registrer diagnose</button>
+        </fieldset>
+      </form>
+      <ul id="diagnose-list"></ul>
+    </section>
+
+    <!-- Allergier -->
+    <section id="allergier" class="section">
+      <h2>⚠️ Allergier &amp; Intoleranser</h2>
+      <form id="allergi-form">
+        <fieldset>
+          <legend>Registrer allergi</legend>
+          <label for="allergi-cpr">Patient CPR *</label>
+          <input type="text" id="allergi-cpr" required maxlength="11" placeholder="123456-7890" />
+          <label for="allergi-text">Allergen/Substans *</label>
+          <input type="text" id="allergi-text" required placeholder="F.eks. Penicillin, Nødder" />
+          <label for="allergi-reaction">Reaktion</label>
+          <input type="text" id="allergi-reaction" placeholder="Udslæt, Åndenød, Anafylaksi" />
+          <label for="allergi-severity">Sværhedsgrad *</label>
+          <select id="allergi-severity" required>
+            <option value="mild">Mild</option>
+            <option value="moderat">Moderat</option>
+            <option value="svær">Svær</option>
+          </select>
+          <button type="submit">Gem allergi</button>
+        </fieldset>
+      </form>
+      <ul id="allergi-list"></ul>
+    </section>
+
+    <!-- Medicin -->
+    <section id="medicin" class="section">
+      <h2>💊 Medicin &amp; Ordinationer</h2>
+      <form id="medicin-form">
+        <fieldset>
+          <legend>Ny ordination</legend>
+          <label for="medicin-cpr">Patient CPR *</label>
+          <input type="text" id="medicin-cpr" required maxlength="11" placeholder="123456-7890" />
+          <label for="medicin-name">Medicin navn *</label>
+          <input type="text" id="medicin-name" required placeholder="F.eks. Paracetamol" />
+          <label for="medicin-dosage">Dosering</label>
+          <input type="text" id="medicin-dosage" placeholder="500mg" />
+          <label for="medicin-frequency">Frekvens</label>
+          <input type="text" id="medicin-frequency" placeholder="3x dagligt" />
+          <label for="medicin-status">Status</label>
+          <select id="medicin-status">
+            <option value="aktiv">Aktiv</option>
+            <option value="seponeret">Seponeret</option>
+            <option value="midlertidig">Midlertidig</option>
+          </select>
+          <button type="submit">Gem ordination</button>
+        </fieldset>
+      </form>
+      <ul id="medicin-list"></ul>
+    </section>
+
+    <!-- Audit -->
+    <section id="audit" class="section">
+      <h2>🔍 Audit &amp; Logning</h2>
+      <div class="list-header">
+        <h3>Systemaktivitet</h3>
+        <button id="clear-audit" class="danger">Ryd log</button>
+      </div>
+      <ul id="audit-list"></ul>
+    </section>
+  </main>
+
+  <!-- Ekstern JavaScript -->
+ <script src="{% static 'js/dashboard.js' %}"></script>
+</body>
+</html>
