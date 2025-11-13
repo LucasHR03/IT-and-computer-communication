@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <title>Opret bruger | EPJ System</title>
+ <link rel="stylesheet" href="../public/css/style.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #0891b2, #06b6d4);
+      font-family: Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #1e293b;
+    }
+    .form-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      width: 350px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #0891b2;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    label, select, input {
+      display: block;
+      width: 100%;
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 0.7rem;
+      background-color: #0891b2;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #066a8b;
+    }
+    .message {
+      color: red;
+      text-align: center;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h1>Opret bruger</h1>
+    
+    <form method="POST" action="opret_bruger.psp">
+      <label>Navn</label>
+      <input type="text" name="full_name" required>
+      
+      <label>Brugernavn</label>
+      <input type="text" name="username" required>
+      
+      <label>Adgangskode</label>
+      <input type="password" name="password" required>
+      
+      <label>Rolle</label>
+      <select name="role" required>
+        <option value="">Vælg rolle</option>
+        <%
+          # PSP Python: liste af roller
+          roller = [
+            {"id": 1, "navn": "Administrator"},
+            {"id": 2, "navn": "Læge"},
+            {"id": 3, "navn": "Sygeplejerske"}
+          ]
+          for rolle in roller:
+              req.write(f'<option value="{rolle["id"]}">{rolle["navn"]}</option>')
+        %>
+      </select>
+      
+      <button type="submit">Opret</button>
+    </form>
+
+    <%
+      import cgi
+      form = cgi.FieldStorage()
+      full_name = form.getfirst("full_name", "")
+      username = form.getfirst("username", "")
+      password = form.getfirst("password", "")
+      role = form.getfirst("role", "")
+
+      if req.method == "POST":
+          if full_name and username and password and role:
+              req.write(f'<p class="message" style="color:green;">Bruger {username} oprettet med rolle {role} ✅</p>')
+          else:
+              req.write('<p class="message">Udfyld alle felter!</p>')
+    %>
+  </div>
+</body>
+</html>

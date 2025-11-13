@@ -1,10 +1,12 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="da">
 <head>
   <meta charset="UTF-8">
-  <title>Opret bruger | EPJ System</title>
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <title>Log ind | EPJ System</title>
+  
+  <!-- Opdateret CSS-link -->
+  <link rel="stylesheet" href="../public/css/style.css">
+  
   <style>
     body {
       background: linear-gradient(135deg, #0891b2, #06b6d4);
@@ -20,7 +22,7 @@
       background: white;
       padding: 2rem;
       border-radius: 10px;
-      width: 350px;
+      width: 300px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
     h1 {
@@ -32,7 +34,7 @@
       display: block;
       margin: 0.5rem 0 0.2rem;
     }
-    input, select {
+    input {
       width: 100%;
       padding: 0.5rem;
       margin-bottom: 1rem;
@@ -61,41 +63,32 @@
 </head>
 <body>
   <div class="form-container">
-    <h1>Opret bruger</h1>
-    <form method="POST">
-      {% csrf_token %}
-      
-      <!-- Navn felt -->
-      <label>Navn</label>
-      <input type="text" name="full_name" required>
-
-      <!-- Brugernavn felt -->
+    <h1>Log ind</h1>
+    
+    <form method="POST" action="login.psp">
       <label>Brugernavn</label>
       <input type="text" name="username" required>
-
-      <!-- Adgangskode felt -->
+      
       <label>Adgangskode</label>
       <input type="password" name="password" required>
-
-      <!-- Rolle felt -->
-   <select name="role" required>
-    <option value="">Vælg rolle</option>
-    {% for rolle in roller %}
-        <option value="{{ rolle.id }}">{{ rolle.navn }}</option>
-    {% endfor %}
-</select>
-
-      <button type="submit">Opret</button>
+      
+      <button type="submit">Log ind</button>
     </form>
 
-    <!-- Fejlmeddelelser vises her -->
-    {% if messages %}
-      <div class="message">
-        {% for message in messages %}
-          <p>{{ message }}</p>
-        {% endfor %}
-      </div>
-    {% endif %}
+    <%
+      # PSP-Pythonkode starter her
+      import cgi
+      form = cgi.FieldStorage()
+      username = form.getfirst("username", "")
+      password = form.getfirst("password", "")
+
+      # Kun vis besked, hvis der er indsendt POST
+      if req.method == "POST":
+          if username == "admin" and password == "1234":
+              req.write('<p class="message" style="color:green;">Login lykkedes! 🎉</p>')
+          else:
+              req.write('<p class="message">Forkert brugernavn eller adgangskode</p>')
+    %>
   </div>
 </body>
 </html>
