@@ -1,11 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="da">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EPJ System - Login</title>
-  <link rel="stylesheet" href="static/css/style.css" />
+  <!-- Rettet sti til CSS -->
+  <link rel="stylesheet" href="/users/<USERNAME>/public/css/style.css" />
 </head>
 <body>
   <div class="landing-page">
@@ -14,12 +14,12 @@
       <p></p>
       <div class="buttons">
         <!-- Login -->
-        <a href="login.psp">
+        <a href="/users/<USERNAME>/psp/login.psp">
           <button id="btn-login">Log ind</button>
         </a>
 
         <!-- Opret bruger -->
-        <a href="opret.psp">
+        <a href="/users/<USERNAME>/psp/opret.psp">
           <button id="btn-register">Opret bruger</button>
         </a>
       </div>
@@ -31,7 +31,6 @@
       </div>
     </div>
   </div>
-
-  <script src="static/js/app.js"></script>
+  <script src="/users/<USERNAME>/public/js/app.js"></script>
 </body>
 </html>
