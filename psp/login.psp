@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <title>Log ind | EPJ System</title>
   
-  <!-- Opdateret CSS-link -->
-  <link rel="stylesheet" href="../public/css/style.css">
+
+  <link rel="stylesheet" href="/users/<USERNAME>/public/css/style.css">
   
   <style>
     body {
@@ -65,7 +65,7 @@
   <div class="form-container">
     <h1>Log ind</h1>
     
-    <form method="POST" action="login.psp">
+    <form method="POST" action="/users/<USERNAME>/psp/login.psp">
       <label>Brugernavn</label>
       <input type="text" name="username" required>
       
@@ -86,7 +86,7 @@
       if req.method == "POST":
           if username == "admin" and password == "1234":
               req.write('<p class="message" style="color:green;">Login lykkedes! 🎉</p>')
-          else:
+          elif username or password:
               req.write('<p class="message">Forkert brugernavn eller adgangskode</p>')
     %>
   </div>
